@@ -1,0 +1,96 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset='UTF-8' />
+	<link rel="stylesheet" type="text/css" href="style1.css">
+	<style>
+#body{
+width:1000px;
+top:0px;
+left:50%;
+background:rgba(25,0,255,0.5);
+margin-left:-500px;
+position:absolute;
+padding:5px;
+ float:left;
+overflow:hidden;
+}
+
+#boton1{
+width:0px;
+height:0px;
+position:relative;
+float:left;
+overflow:hidden;
+}
+	</style>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script src="fancywebsocket.js"></script>
+	<script>
+		var Server;
+
+		function log( text ) {
+		if(text=="boton2"){
+				$("#boton1").animate({height:500},"slow");
+				$("#boton1").animate({width:500},"slow");
+				$("#boton1").animate({height:920},"slow");
+				$("#boton1").animate({width:1280},"slow");
+			}
+			
+		if(text=="boton1"){
+				$("#boton1").animate({height:100},"slow");
+				$("#boton1").animate({width:100},"slow");
+				$("#boton1").animate({height:520},"slow");
+				$("#boton1").animate({width:580},"slow");
+			}
+			
+		if(text=="boton3"){
+				$("#boton1").animate({height:10},"slow");
+				$("#boton1").animate({width:10},"slow");
+				$("#boton1").animate({height:20},"slow");
+				$("#boton1").animate({width:80},"slow");
+			}
+		}
+
+		function send( text ) {
+			Server.send( 'message', text );
+		}
+
+		$(document).ready(function() {
+			log('Connecting...');
+			Server = new FancyWebSocket('ws://192.168.1.109:9300');
+
+			$('#message').keypress(function(e) {
+				if ( e.keyCode == 13 && this.value ) {
+					log( 'You: ' + this.value );
+					send( this.value );
+
+					$(this).val('');
+				}
+			});
+
+			//Let the user know we're connected
+			Server.bind('open', function() {
+				log( "Connected." );
+			});
+
+			//OH NOES! Disconnection occurred.
+			Server.bind('close', function( data ) {
+				log( "Disconnected." );
+			});
+
+			//Log any messages sent from server
+			Server.bind('message', function( payload ) {
+				log( payload );
+			});
+
+			Server.connect();
+		});
+	</script>
+</head>
+
+<body>
+	<div id="boton1"><iframe width="1280" height="720" src="http://www.youtube.com/embed/zauEeIwQV0g?&autoplay=1" frameborder="0" allowfullscreen></iframe></div>
+</body>
+
+</html>

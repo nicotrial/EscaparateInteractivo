@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset='UTF-8' />
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script src="fancywebsocket.js"></script>
+	<script>
+		var Server;
+
+		function log( text ) {
+
+		}
+
+		function send( text ) {
+			Server.send( 'message', text );
+		}
+
+		$(document).ready(function() {
+			log('Connecting...');
+			Server = new FancyWebSocket('ws://192.168.1.109:9300');
+
+			$("#boton1").click(function(){
+				send( "boton1" );
+				});
+			
+			$("#boton2").click(function(){
+				send( "boton2" );
+				});
+			
+			$("#boton3").click(function(){
+				send( "boton3" );
+				});
+				
+			$("#boton4").click(function(){
+				send( "boton3" );
+				send( "arduino1" );
+				});
+
+			$('#message').keypress(function(e) {
+				if ( e.keyCode == 13 && this.value ) {
+					log( 'You: ' + this.value );
+					send( this.value );
+
+					$(this).val('');
+				}
+			});
+
+			//Let the user know we're connected
+			Server.bind('open', function() {
+				log( "Connected." );
+			});
+
+			//OH NOES! Disconnection occurred.
+			Server.bind('close', function( data ) {
+				log( "Disconnected." );
+			});
+
+			//Log any messages sent from server
+			Server.bind('message', function( payload ) {
+				log( payload );
+			});
+
+			Server.connect();
+		});
+	</script>
+</head>
+
+<body>
+	<div id="boton1">boton1</div>
+	<div id="boton2">boton2</div>
+	<div id="boton3">boton3</div>
+	<div id="boton4">boton4</div>
+</body>
+
+</html>
